@@ -1,164 +1,23 @@
-# State of Ashes - Landing Page
+# State of Ashes
 
-A high-impact, Awwwards-worthy single-page landing page with Cyber-Industrial Resurrection aesthetic.
+Single-page systems architecture studio built with Next.js App Router, React, Tailwind CSS, Lucide, GSAP and Framer Motion.
 
-## 🔥 Features
+## Run
+Use Node.js 20.9 or later. Run `npm ci`, then `npm run dev -- --port 3001`.
 
-- **Config-Driven Architecture**: All content editable from a single `siteConfig.ts` file
-- **Living Metrics**: Animated count-up statistics that trigger on scroll
-- **Video Background**: Muted, autoplay background with scanline overlay
-- **Breathing Logo Glow**: Pulsing animation effect
-- **Brushed Metal Cards**: Hover effects with orange glow borders
-- **Smooth Animations**: Framer Motion for all scroll-triggered reveals
-- **Fully Responsive**: Mobile-first design
+`npm run build` validates the production build. `npm start -- --port 3001` serves it. `npm run typecheck` checks TypeScript.
 
-## 🚀 Quick Start
+## Experience
+The phoenix video leads the hero, with MP4/WebM sources and a static poster fallback. The exact supplied logo.png remains in the header, footer and favicon. The hero has no overlaid logo or separate film-viewing button.
 
-### 1. Install Dependencies
+Includes an interactive reconstruction lab, expandable capabilities, blueprint comparisons, contextual diagnostic intake, sticky navigation, GSAP motion, and Framer Motion feedback. Motion can be disabled; video pauses offscreen and when the page is hidden.
 
-```bash
-npm install
-```
+## Intake
+Copy `.env.example` to `.env.local`, set `INTAKE_WEBHOOK_URL` and optionally `INTAKE_WEBHOOK_TOKEN`, and restart. The endpoint receives name, email, bottleneck, source, and submittedAt as JSON. Use an HTTPS destination with delivery acknowledgment. Without a destination the API returns HTTP 503 and explicitly reports that nothing was sent. No requests are stored locally. Failed delivery offers a copyable diagnostic brief. Configure rate limiting at the hosting edge before public launch.
 
-### 2. Add Your Assets
+Run `node scripts/test-intake.mjs` with the unconfigured production app on port 3001. It tests validation, missing configuration, and mock delivery. It temporarily starts an app instance on port 3002 and a local webhook, then stops them.
 
-Place these files in the `public` folder:
+## Assets and content
+`public/logo.png` is the unmodified supplied logo. `public/phoenix.mp4` is the original supplied video, `phoenix.webm` is a compatibility encode, and `phoenix-poster.jpg` is an extracted still. Blueprint cards are illustrative concepts, not verified customer case studies.
 
-- `Bronze_Phoenix_Rises_From_Digital_Veins.mp4` (background video)
-- `logo.png` (your phoenix logo - extract from the uploaded PNG)
-
-### 3. Run Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## ✏️ Editing Content
-
-**THIS IS THE KEY FEATURE**: All content lives in `siteConfig.ts`. 
-
-### To Change Metrics:
-
-```typescript
-// Open siteConfig.ts and modify:
-metrics: {
-  systemsOnline: 99.9,    // Change to 100
-  activeUsers: 4500,       // Change to 5000
-  dataProcessed: 1.2,      // Change to 2.5
-  dataUnit: "PB",
-  uptime: 99.98,
-}
-```
-
-Save the file. The site updates automatically.
-
-### To Change Core Values:
-
-```typescript
-coreValues: [
-  {
-    id: 1,
-    title: "Your New Title",           // Edit here
-    description: "Your new description", // Edit here
-    icon: "🔥",
-  },
-  // Add more values...
-]
-```
-
-## 📁 Project Structure
-
-```
-state-of-ashes/
-├── siteConfig.ts          ← EDIT THIS to change content
-├── page.tsx               ← Main landing page component
-├── layout.tsx             ← Root layout
-├── globals.css            ← Global styles
-├── public/
-│   ├── logo.png          ← Your logo
-│   └── Bronze_Phoenix_Rises_From_Digital_Veins.mp4
-├── package.json
-├── tailwind.config.js
-├── tsconfig.json
-└── README.md
-```
-
-## 🎨 Design System
-
-**Colors:**
-- Inferno Orange: `#FF4500`
-- Molten Gold: `#FFA500`
-- Ember Glow: `#E67E22`
-- Carbon Black: `#0F0F0F`
-- Gunmetal Grey: `#2C3E50`
-
-**Typography:**
-- Headings: Microgramma Bold (fallback: Impact)
-- Body: Roboto
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **Animation**: Framer Motion
-- **Language**: TypeScript
-
-## 📦 Build for Production
-
-```bash
-npm run build
-npm start
-```
-
-## 🎯 Key Animations
-
-1. **Hero Logo**: Breathing glow effect (3s loop)
-2. **Metrics Counters**: Scroll-triggered count-up with easing
-3. **Cards**: Hover glow on borders + background shift
-4. **Scroll Reveal**: Fade-in + slide-up on all sections
-
-## 🔧 Customization Guide
-
-### Change Video Background
-Replace `public/Bronze_Phoenix_Rises_From_Digital_Veins.mp4` with your video.
-
-### Adjust Animation Speed
-In `page.tsx`, modify the `duration` prop:
-```typescript
-<AnimatedCounter end={99.9} duration={3} /> // 3 seconds instead of 2
-```
-
-### Add New Metric Cards
-Edit `siteConfig.ts`:
-```typescript
-metrics: {
-  systemsOnline: 99.9,
-  activeUsers: 4500,
-  yourNewMetric: 1234,  // Add here
-}
-```
-
-Then add the card in `page.tsx` metrics section.
-
-## 📱 Responsive Breakpoints
-
-- Mobile: < 768px
-- Tablet: 768px - 1024px
-- Desktop: > 1024px
-
-## ⚡ Performance Notes
-
-- Video is compressed to 4.4MB
-- All animations use GPU-accelerated transforms
-- Images use Next.js Image optimization
-- Lazy loading enabled for below-fold content
-
-## 📄 License
-
-Proprietary - State of Ashes 2026
-
----
-
-Built with 🔥 by a Senior Creative Technologist
+Palette: #070709, #0F0F12, #EDECE7, #F59E0B, #EA580C. Type: Barlow Condensed, Manrope and IBM Plex Mono, with system fallbacks.

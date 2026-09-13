@@ -1,75 +1,7 @@
-# Deployment Guide
+# Deployment
 
-## Deploy to Vercel (Recommended)
+Deploy the repository root as a Next.js app on a Node.js-capable hosting service (Node.js 20.9 or later). Install with `npm ci`, build with `npm run build`, and serve with `npm start`. The intake route requires a server runtime; do not deploy as a static export.
 
-1. Install Vercel CLI:
-```bash
-npm i -g vercel
-```
+Set `INTAKE_WEBHOOK_URL` and optionally `INTAKE_WEBHOOK_TOKEN` in the hosting provider's environment settings to enable diagnostic delivery. Use HTTPS for the site and its webhook destination. No secrets belong in this repository. Without a webhook the form explicitly reports that nothing was sent.
 
-2. Deploy:
-```bash
-vercel
-```
-
-3. Follow prompts and your site will be live!
-
-## Deploy to Netlify
-
-1. Install Netlify CLI:
-```bash
-npm i -g netlify-cli
-```
-
-2. Build the project:
-```bash
-npm run build
-```
-
-3. Deploy:
-```bash
-netlify deploy --prod
-```
-
-## Deploy to Your Own Server
-
-1. Build the project:
-```bash
-npm run build
-```
-
-2. The output will be in `.next` folder
-
-3. Copy everything to your server
-
-4. Run:
-```bash
-npm start
-```
-
-## Environment Variables
-
-No environment variables needed! Everything is in `siteConfig.ts`.
-
-## Domain Setup
-
-After deployment, point your custom domain:
-- Vercel: Project Settings → Domains
-- Netlify: Site Settings → Domain Management
-
-## Performance Checklist
-
-- ✅ Video compressed (4.4MB)
-- ✅ Images optimized
-- ✅ Lazy loading enabled
-- ✅ Code splitting automatic with Next.js
-- ✅ CSS purged with Tailwind
-- ✅ Animations GPU-accelerated
-
-## CDN Configuration
-
-Both Vercel and Netlify provide automatic CDN. No extra config needed.
-
-## SSL/HTTPS
-
-Both platforms provide free SSL certificates automatically.
+The original site's setup and customization guides are archived under `docs/legacy` for historical reference; use the root README and current App Router files for this version.
