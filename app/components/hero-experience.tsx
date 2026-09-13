@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ArrowDown, Pause, Play } from "lucide-react";
 import { useExperience, ActionLink } from "./experience";
+import { observeVideoPlayback } from "./video-playback";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 export function HeroExperience() {
@@ -20,15 +21,23 @@ export function HeroExperience() {
   useEffect(() => {
     const player = video.current;
     if (!player) return;
+    const presentation = observeVideoPlayback(player, state => {
+      setPlaying(state.playing);
+      setHasFrame(state.hasFrame);
+      setFailed(state.failed);
+    });
+    player.muted = true;
+    player.defaultMuted = true;
     const sync = () => {
-      if (enabled && inView.current && !userPaused.current && !document.hidden) player.play().catch(() => setPlaying(false));
+      if (enabled && inView.current && !userPaused.current && !document.hidden) player.play().then(presentation.refresh, presentation.refresh);
       else player.pause();
+      presentation.refresh();
     };
     const observer = new IntersectionObserver(([entry]) => { inView.current = entry.isIntersecting; sync(); }, { threshold: .05 });
     if (root.current) observer.observe(root.current);
     document.addEventListener("visibilitychange", sync);
     sync();
-    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", sync); player.pause(); };
+    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", sync); presentation.dispose(); player.pause(); };
   }, [enabled]);
   useGSAP(() => {
     if (!enabled) return;
@@ -44,7 +53,7 @@ export function HeroExperience() {
     return () => match.revert();
   }, { scope: root, dependencies: [enabled], revertOnUpdate: true });
   return <section ref={root} id="origin" className="hero" aria-labelledby="hero-title">
-    <div className="hero-art" aria-hidden="true"><img className={`video-poster ${hasFrame && !failed ? "poster-hidden" : ""}`} src="/phoenix-poster.jpg" alt="" fetchPriority="high"/><video ref={video} autoPlay={enabled} muted loop playsInline preload="auto" poster="/phoenix-poster.jpg" className={hasFrame && !failed ? "ambient-video video-visible" : "ambient-video"} onPlaying={() => { setPlaying(true); setHasFrame(true); }} onPause={() => setPlaying(false)} onError={() => { setFailed(true); setPlaying(false); }}><source src="/phoenix.webm" type="video/webm"/><source src="/phoenix.mp4" type="video/mp4"/></video><div className="hero-shade"/></div>
+    <div className="hero-art" aria-hidden="true"><img className={`video-poster ${hasFrame && !failed ? "poster-hidden" : ""}`} src="/phoenix-poster.jpg" alt="" fetchPriority="high"/><video ref={video} autoPlay={enabled} muted loop playsInline preload="auto" poster="/phoenix-poster.jpg" className={hasFrame && !failed ? "ambient-video video-visible" : "ambient-video"}><source src="/phoenix.webm" type="video/webm"/><source src="/phoenix.mp4" type="video/mp4"/></video><div className="hero-shade"/></div>
     <div className="hero-stage shell"><div className="art-frame"><span className="art-caption mono">SOA / ORIGIN ARTIFACT</span><span className="art-caption art-caption-right mono">ARCH_V1.0</span><i className="frame-corner tl"/><i className="frame-corner tr"/><i className="frame-corner bl"/><i className="frame-corner br"/><span className="art-bottom mono"><span className="status-dot"/> RECONSTRUCTION PROTOCOL / ACTIVE</span></div>
       <div className="hero-side hero-side-left mono"><span>INDEPENDENT THINKING.</span><span>EXACTING EXECUTION.</span><i/></div><div className="hero-side hero-side-right mono"><span>NOTHING EXTRA.</span><span>NOTHING ACCIDENTAL.</span><i/></div>
     </div>
