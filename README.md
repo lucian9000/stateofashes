@@ -13,9 +13,15 @@ The phoenix video leads the hero, with MP4/WebM sources and a static poster fall
 Includes an interactive reconstruction lab, expandable capabilities, blueprint comparisons, contextual diagnostic intake, sticky navigation, GSAP motion, and Framer Motion feedback. Motion can be disabled; video pauses offscreen and when the page is hidden.
 
 ## Intake
-Copy `.env.example` to `.env.local`, set `INTAKE_WEBHOOK_URL` and optionally `INTAKE_WEBHOOK_TOKEN`, and restart. The endpoint receives name, email, bottleneck, source, and submittedAt as JSON. Use an HTTPS destination with delivery acknowledgment. Without a destination the API returns HTTP 503 and explicitly reports that nothing was sent. No requests are stored locally. Failed delivery offers a copyable diagnostic brief. Configure rate limiting at the hosting edge before public launch.
+The form posts to `/api/intake`, which saves the request to Supabase and emails a copy through Resend.
 
-Run `node scripts/test-intake.mjs` with the unconfigured production app on port 3001. It tests validation, missing configuration, and mock delivery. It temporarily starts an app instance on port 3002 and a local webhook, then stops them.
+Run `supabase/intake_requests.sql` once in the Supabase SQL Editor to create `public.intake_requests`. Row level security is enabled with no policies, so only the service role key reaches it.
+
+Copy `.env.example` to `.env.local` and set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` and `INTAKE_NOTIFY_EMAIL`. The same variables must be set in the Vercel project for production. Until a sending domain is verified in Resend, the default sender is `onboarding@resend.dev`, which only delivers to the Resend account owner's address; set `INTAKE_FROM_EMAIL` to a verified stateofashes.com address once the domain is added.
+
+A request is accepted if it is either stored or emailed, so one failing channel does not lose a lead. Both failing returns HTTP 502 and the form offers a copyable diagnostic brief. Failures are logged to the Vercel runtime logs. Configure rate limiting at the hosting edge before public launch.
+
+Run `node scripts/test-intake.mjs` with the unconfigured production app on port 3001. It tests validation, the unconfigured case, and storage and email against a local mock on port 3002. It temporarily starts an app instance and a mock server, then stops them.
 
 ## Assets and content
 `public/logo.png` is the unmodified supplied logo. `public/phoenix.mp4` is the original supplied video, `phoenix.webm` is a compatibility encode, and `phoenix-poster.jpg` is an extracted still. Blueprint cards are illustrative concepts, not verified customer case studies.

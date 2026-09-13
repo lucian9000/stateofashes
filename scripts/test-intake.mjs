@@ -12,23 +12,36 @@ for (const [label, data, headers, expected] of [
   ['honeypot', { ...valid, website: 'bot' }, {}, 400],
   ['oversized payload', 'a'.repeat(12001), {}, 413],
   ['foreign origin', valid, { Origin: 'https://example.com' }, 403],
-  ['same-origin unconfigured delivery', valid, {}, 503],
+  ['same-origin unconfigured delivery', valid, {}, 502],
 ]) {
   const response = await post(base, data, headers);
   assert.equal(response.status, expected, label);
   console.log(`PASS: ${label}`);
 }
-let received;
-let failDelivery = false;
-const webhook = createServer(async (req, res) => {
-  let body = ''; for await (const chunk of req) body += chunk;
-  received = JSON.parse(body);
-  assert.equal(req.headers.authorization, 'Bearer test-token');
-  res.writeHead(failDelivery ? 500 : 200); res.end('{}');
+
+let inserted;
+let sent;
+const state = { supabase: 201, resend: 200 };
+const read = async (req) => { let body = ''; for await (const chunk of req) body += chunk; return JSON.parse(body); };
+const mock = createServer(async (req, res) => {
+  if (req.url.startsWith('/rest/v1/intake_requests')) {
+    inserted = await read(req);
+    assert.equal(req.headers.apikey, 'test-service-key');
+    assert.equal(req.headers.authorization, 'Bearer test-service-key');
+    res.writeHead(state.supabase); res.end('{}');
+    return;
+  }
+  if (req.url.startsWith('/emails')) {
+    sent = await read(req);
+    assert.equal(req.headers.authorization, 'Bearer test-resend-key');
+    res.writeHead(state.resend); res.end('{}');
+    return;
+  }
+  res.writeHead(404); res.end('{}');
 });
-await new Promise(resolve => webhook.listen(0, '127.0.0.1', resolve));
-const webhookPort = webhook.address().port;
-const child = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1', '--port', '3002'], { env: { ...process.env, INTAKE_WEBHOOK_URL: `http://127.0.0.1:${webhookPort}`, INTAKE_WEBHOOK_TOKEN: 'test-token' }, stdio: 'ignore', windowsHide: true });
+await new Promise(resolve => mock.listen(0, '127.0.0.1', resolve));
+const mockUrl = `http://127.0.0.1:${mock.address().port}`;
+const child = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1', '--port', '3002'], { env: { ...process.env, SUPABASE_URL: mockUrl, SUPABASE_SERVICE_ROLE_KEY: 'test-service-key', RESEND_API_URL: mockUrl, RESEND_API_KEY: 'test-resend-key', INTAKE_NOTIFY_EMAIL: 'owner@example.com' }, stdio: 'ignore', windowsHide: true });
 try {
   let ready = false;
   for (let i = 0; i < 40; i++) {
@@ -36,12 +49,24 @@ try {
     await new Promise(resolve => setTimeout(resolve, 250));
   }
   assert.ok(ready, 'test server starts');
+
   const accepted = await post('http://127.0.0.1:3002', valid);
   assert.equal(accepted.status, 200); assert.equal((await accepted.json()).ok, true);
-  assert.equal(received.name, 'Test Studio'); assert.equal(received.bottleneck, valid.bottleneck.trim());
-  assert.equal(received.source, 'state-of-ashes'); assert.ok(received.submittedAt);
-  console.log('PASS: acknowledged delivery with normalized payload and authorization');
-  failDelivery = true;
+  assert.equal(inserted.name, 'Test Studio'); assert.equal(inserted.bottleneck, valid.bottleneck.trim());
+  assert.equal(inserted.source, 'state-of-ashes'); assert.ok(inserted.submitted_at);
+  assert.deepEqual(sent.to, ['owner@example.com']); assert.equal(sent.reply_to, 'test@example.com');
+  assert.ok(sent.text.includes('Test Studio'));
+  console.log('PASS: stores the normalized request and emails a notification');
+
+  state.resend = 500;
+  assert.equal((await post('http://127.0.0.1:3002', valid)).status, 200);
+  console.log('PASS: a stored request still succeeds when email delivery fails');
+
+  state.supabase = 500;
   assert.equal((await post('http://127.0.0.1:3002', valid)).status, 502);
-  console.log('PASS: upstream failure does not report success');
-} finally { child.kill(); await new Promise(resolve => webhook.close(resolve)); }
+  console.log('PASS: losing both store and email does not report success');
+
+  state.resend = 200;
+  assert.equal((await post('http://127.0.0.1:3002', valid)).status, 200);
+  console.log('PASS: an emailed request still succeeds when storage fails');
+} finally { child.kill(); await new Promise(resolve => mock.close(resolve)); }
