@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 export const metadata: Metadata = {
   title: "State of Ashes — Systems Architecture Studio",
@@ -6,4 +7,4 @@ export const metadata: Metadata = {
   icons: { icon: "/logo.png" },
   openGraph: { title: "State of Ashes", description: "Dismantle what holds you back. Build what moves you forward.", type: "website" },
 };
-export default function RootLayout({ children }: { children: React.ReactNode }) { return <html lang="en"><body>{children}</body></html>; }
+export default function RootLayout({ children }: { children: React.ReactNode }) { return <html lang="en"><body>{children}<Analytics /></body></html>; }
