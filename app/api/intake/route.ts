@@ -38,6 +38,28 @@ async function notify(entry: Submission) {
   return true;
 }
 
+async function acknowledge(entry: Submission) {
+  const key = process.env.RESEND_API_KEY;
+  const templateId = process.env.INTAKE_AUTOREPLY_TEMPLATE_ID;
+  // Enable only after publishing the template and verifying the sending domain.
+  if (!key || !templateId) return false;
+  const response = await fetch(`${process.env.RESEND_API_URL || "https://api.resend.com"}/emails`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      from: "State of Ashes <info@stateofashes.com>",
+      to: [entry.email],
+      reply_to: "info@stateofashes.com",
+      // Keep the subject editable in the published Resend template.
+      template: { id: templateId },
+      headers: { "Auto-Submitted": "auto-replied", "X-Auto-Response-Suppress": "All" },
+    }),
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!response.ok) throw new Error(`Resend acknowledgement failed: ${response.status}`);
+  return true;
+}
+
 export async function POST(request: Request) {
   if (request.headers.get("origin") && new URL(request.headers.get("origin")!).host !== request.headers.get("host")) return NextResponse.json({ error: "Please submit the form from this website." }, { status: 403 });
   const raw = await request.text();
@@ -68,5 +90,11 @@ export async function POST(request: Request) {
   // Saved or emailed is enough to consider the request received; only a total
   // failure is reported back to the visitor so they can keep their brief.
   if (!stored && !notified) return NextResponse.json({ error: "Delivery could not be confirmed. Your details have not been saved. Please try again later." }, { status: 502 });
+  try {
+    await acknowledge(entry);
+  } catch (error) {
+    // The lead is received. Do not ask the visitor to resubmit and duplicate it.
+    console.error("intake: acknowledgement failed", error);
+  }
   return NextResponse.json({ ok: true });
 }

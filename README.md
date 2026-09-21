@@ -27,3 +27,6 @@ Run `node scripts/test-intake.mjs` with the unconfigured production app on port 
 `public/logo.png` is the unmodified supplied logo. `public/phoenix.mp4` is the original supplied video, `phoenix.webm` is a compatibility encode, and `phoenix-poster.jpg` is an extracted still. Blueprint cards are illustrative concepts, not verified customer case studies.
 
 Palette: #070709, #0F0F12, #EDECE7, #F59E0B, #EA580C. Type: Barlow Condensed, Manrope and IBM Plex Mono, with system fallbacks.
+
+## Visitor acknowledgement
+See [emails/README.md](emails/README.md) for the branded HTML template, Resend publishing steps, and the info@stateofashes.com delivery settings. Set `INTAKE_AUTOREPLY_TEMPLATE_ID` to enable acknowledgement after successful intake.
