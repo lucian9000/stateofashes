@@ -1,0 +1,121 @@
+.architecture-card {
+  --visual-accent: #ddb06d;
+  --visual-wash: #b87a2d12;
+}
+
+.architecture-card[data-art="network"] { --visual-accent: #d9a86b; --visual-wash: #8e6c3a16; }
+.architecture-card[data-art="security"] { --visual-accent: #e7bf7b; --visual-wash: #c4923914; }
+.architecture-card[data-art="software"] { --visual-accent: #e6ab6a; --visual-wash: #a96d3215; }
+.architecture-card[data-art="automation"] { --visual-accent: #ecc185; --visual-wash: #ae813819; }
+.architecture-card[data-art="direction"] { --visual-accent: #ebc079; --visual-wash: #b28d3a15; }
+
+.capability-visual {
+  height: 162px;
+  margin: 18px -5px 18px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  color: var(--visual-accent);
+  background: radial-gradient(ellipse at 50% 52%, var(--visual-wash), transparent 72%);
+  transform-style: preserve-3d;
+}
+
+.capability-visual::before {
+  content: "";
+  position: absolute;
+  inset: 10px 1px;
+  z-index: -1;
+  opacity: .28;
+  background: linear-gradient(90deg, transparent 24px, #b3853e12 25px, transparent 26px),
+              linear-gradient(0deg, transparent 24px, #b3853e12 25px, transparent 26px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse, black 20%, transparent 73%);
+}
+
+.capability-visual svg {
+  width: min(100%, 320px);
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px #d89b2e0b);
+}
+
+.capability-visual path,
+.capability-visual rect,
+.capability-visual circle {
+  vector-effect: non-scaling-stroke;
+}
+
+.cv-faint { fill: none; stroke: #a9814a39; stroke-width: 1; }
+.cv-muted { fill: none; stroke: #bb9a6c86; stroke-width: 1; }
+.cv-line { fill: none; stroke: var(--visual-accent); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.cv-panel { fill: #21180d7a; stroke: #bd8b4e91; stroke-width: 1; }
+.cv-node { fill: #17130e; stroke: #c39458; stroke-width: 1.2; }
+.cv-dot { fill: var(--visual-accent); filter: drop-shadow(0 0 4px #edac50a6); }
+.cv-core { fill: #24190d; stroke: #e7b675; stroke-width: 1.2; }
+.cv-flow { fill: none; stroke: #edbd78; stroke-width: 1.2; stroke-dasharray: 4 8; opacity: .65; }
+.cv-label, .cv-small { fill: #c6a276; font: 8px 'IBM Plex Mono', monospace; letter-spacing: .7px; }
+.cv-small { fill: #9f896d; font-size: 6.4px; letter-spacing: 1px; }
+
+.visual-workplace .cv-panel { transition: transform .55s var(--ease), stroke .35s; }
+.visual-workplace .cv-panel-left { transform-origin: 133px 80px; }
+.visual-workplace .cv-panel-right { transform-origin: 187px 80px; }
+.architecture-card:is(:hover, :focus-within, .selected) .visual-workplace .cv-panel-left { transform: translateX(-5px); stroke: #efba75; }
+.architecture-card:is(:hover, :focus-within, .selected) .visual-workplace .cv-panel-right { transform: translateX(5px); stroke: #efba75; }
+
+.visual-network .cv-node { transition: fill .35s, filter .35s, transform .5s var(--ease); }
+.architecture-card:is(:hover, :focus-within, .selected) .visual-network .cv-node { fill: #3c2914; filter: drop-shadow(0 0 5px #dea34b75); }
+.architecture-card:is(:hover, :focus-within, .selected) .visual-network .cv-flow,
+.architecture-card:is(:hover, :focus-within, .selected) .visual-workplace .cv-flow,
+.architecture-card:is(:hover, :focus-within, .selected) .visual-automation .cv-flow { animation: visual-signal 1.4s linear infinite; }
+
+.cv-orbit, .cv-orbit-inner { fill: none; stroke: #d1a46170; stroke-width: 1; stroke-dasharray: 5 8; transform-origin: 160px 77px; }
+.cv-orbit-inner { stroke: #d1a4614d; stroke-dasharray: 2 5; }
+.cv-shield { fill: #30200e9c; stroke: #e9bb78; stroke-width: 1.5; stroke-linejoin: round; transition: fill .4s, filter .4s; }
+.cv-check { fill: none; stroke: #f3ca8e; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.architecture-card:is(:hover, :focus-within, .selected) .cv-shield { fill: #4c2f0f8a; filter: drop-shadow(0 0 8px #e4a44182); }
+.architecture-card:is(:hover, :focus-within, .selected) .cv-orbit { animation: visual-orbit 14s linear infinite; }
+.architecture-card:is(:hover, :focus-within, .selected) .cv-orbit-inner { animation: visual-orbit 18s linear infinite reverse; }
+
+.visual-software .cv-window-back { stroke: #af784d8c; }
+.visual-software .cv-window-front { fill: #171310; }
+.visual-software .cv-window-front, .visual-software .cv-window-back { transition: transform .5s var(--ease), stroke .4s; }
+.architecture-card:is(:hover, :focus-within, .selected) .visual-software .cv-window-front { transform: translate(-4px, 3px); stroke: #e6b071; }
+.architecture-card:is(:hover, :focus-within, .selected) .visual-software .cv-window-back { transform: translate(4px, -3px); }
+.cv-cursor { fill: #e9b775; }
+.architecture-card:is(:hover, :focus-within, .selected) .cv-cursor { animation: visual-blink 1s steps(2, end) infinite; }
+
+.cv-core-shape { fill: #2a1e0d; stroke: #e8b878; stroke-width: 1.4; stroke-linejoin: round; transition: filter .4s, transform .4s; transform-origin: 160px 78px; }
+.architecture-card:is(:hover, :focus-within, .selected) .cv-core-shape { filter: drop-shadow(0 0 9px #df9c407e); transform: scale(1.055); }
+.visual-automation .cv-satellite { transition: filter .4s; }
+.architecture-card:is(:hover, :focus-within, .selected) .visual-automation .cv-satellite { filter: drop-shadow(0 0 6px #ffc16e); }
+
+.cv-path-shadow { fill: none; stroke: #7f5b3260; stroke-width: 11; stroke-linecap: round; }
+.cv-path { fill: none; stroke: #e7b56c; stroke-width: 1.8; stroke-linecap: round; }
+.cv-milestone { fill: #19140e; stroke: #dfad67; stroke-width: 1.4; transition: fill .3s, filter .3s; }
+.cv-destination { fill: #d9a85f; filter: drop-shadow(0 0 6px #e5a44590); }
+.architecture-card:is(:hover, :focus-within, .selected) .cv-path { stroke-dasharray: 5 7; animation: visual-signal 1.5s linear infinite; }
+.architecture-card:is(:hover, :focus-within, .selected) .cv-destination { fill: #ffd398; filter: drop-shadow(0 0 10px #f1b656); }
+
+.architecture-card[data-art="software"] .capability-visual::before { opacity: .13; }
+.architecture-card[data-art="security"] .capability-visual::before { mask-image: radial-gradient(circle, black 11%, transparent 64%); }
+.architecture-card[data-art="direction"] .capability-visual::before { opacity: .18; }
+
+@keyframes visual-signal { to { stroke-dashoffset: -24; } }
+@keyframes visual-orbit { to { transform: rotate(360deg); } }
+@keyframes visual-blink { 50% { opacity: 0; } }
+
+@media (max-width: 850px) and (min-width: 768px) {
+  .cv-label { font-size: 7px; }
+}
+
+@media (max-width: 767px) {
+  .capability-visual { height: 148px; margin-block: 16px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capability-visual *, .capability-visual::before { animation: none !important; transition: none !important; }
+}
+
+.motion-paused .capability-visual *,
+.motion-paused .capability-visual::before { animation: none !important; transition: none !important; }
