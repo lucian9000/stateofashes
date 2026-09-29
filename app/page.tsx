@@ -12,6 +12,7 @@ import { DoctrineLab } from "./components/doctrine-lab";
 import { Architecture } from "./components/architecture";
 import { Blueprints } from "./components/blueprints";
 import { IntakeForm } from "./components/intake-form";
+import { GuidedIntake } from "./components/guided-intake";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -41,6 +42,7 @@ function Landing() {
       <section id="intake" className="intake-section" aria-labelledby="intake-title"><div className="shell section intake-layout"><div className="intake-copy"><div className="section-eyebrow mono"><span className="tiny-cross">+</span> START A CONVERSATION<span className="eyebrow-line"/></div><h2 id="intake-title">Tell us what<br/><span className="text-ember">you need.</span></h2><p className="body-copy">A day-to-day technology need, a specific problem, or a plan taking shape. Start with what matters most to you.</p><div className="intake-signal"><AudioLines size={30} strokeWidth={1}/><div className="mono">HUMAN INSIGHT. SYSTEMS THINKING.<span>Direct conversation. No fixed playbook.</span></div></div><div className="intake-next"><span className="mono">WHAT HAPPENS NEXT</span><p>We read your context and follow up by email to understand the right next step. Please leave out passwords, codes, and confidential records.</p></div></div><IntakeForm/></div></section>
     </main>
     <footer className="shell footer"><div className="footer-top"><Brand/><a href="#top" className="back-top mono">BACK TO THE BEGINNING<ArrowUpRight size={20}/></a></div><div className="footer-bottom mono"><span>© {new Date().getFullYear()} STATE OF ASHES</span><span>DECONSTRUCT. DISTILL. RECONSTRUCT.</span><span className="footer-signature">BUILT WITH INTENT.</span></div></footer>
+    <GuidedIntake/>
   </div>;
 }
 

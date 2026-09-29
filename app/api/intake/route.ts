@@ -28,9 +28,9 @@ async function notify(entry: Submission) {
       from: process.env.INTAKE_FROM_EMAIL || "State of Ashes <onboarding@resend.dev>",
       to: [to],
       reply_to: entry.email,
-      subject: `Diagnostic request — ${entry.name}`,
-      text: `Name / Organization: ${entry.name}\nCommunication Channel: ${entry.email}\nSubmitted: ${entry.submittedAt}\n\nBottleneck:\n${entry.bottleneck}`,
-      html: `<h2>Diagnostic request</h2><p><strong>Name / Organization:</strong> ${escape(entry.name)}<br><strong>Communication Channel:</strong> <a href="mailto:${escape(entry.email)}">${escape(entry.email)}</a><br><strong>Submitted:</strong> ${escape(entry.submittedAt)}</p><h3>Bottleneck</h3><p style="white-space:pre-wrap">${escape(entry.bottleneck)}</p>`,
+      subject: `Website enquiry — ${entry.name}`,
+      text: `Name / Organization: ${entry.name}\nEmail: ${entry.email}\nSubmitted: ${entry.submittedAt}\n\nEnquiry:\n${entry.bottleneck}`,
+      html: `<h2>Website enquiry</h2><p><strong>Name / Organization:</strong> ${escape(entry.name)}<br><strong>Email:</strong> <a href="mailto:${escape(entry.email)}">${escape(entry.email)}</a><br><strong>Submitted:</strong> ${escape(entry.submittedAt)}</p><h3>Enquiry</h3><p style="white-space:pre-wrap">${escape(entry.bottleneck)}</p>`,
     }),
     signal: AbortSignal.timeout(10000),
   });
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
   if (!data || typeof data !== "object") return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   const { name, email, bottleneck, website } = data;
   if (website) return NextResponse.json({ error: "Request could not be accepted." }, { status: 400 });
-  if (typeof name !== "string" || name.trim().length < 2 || name.length > 160 || typeof email !== "string" || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || typeof bottleneck !== "string" || bottleneck.trim().length < 20 || bottleneck.length > 5000) return NextResponse.json({ error: "Enter your name, a valid email, and at least 20 characters describing the bottleneck." }, { status: 400 });
+  if (typeof name !== "string" || name.trim().length < 2 || name.length > 160 || typeof email !== "string" || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || typeof bottleneck !== "string" || bottleneck.trim().length < 20 || bottleneck.length > 5000) return NextResponse.json({ error: "Enter your name, a valid email, and at least 20 characters describing what you need help with." }, { status: 400 });
 
   const entry: Submission = { name: name.trim(), email: email.trim(), bottleneck: bottleneck.trim(), submittedAt: new Date().toISOString() };
 

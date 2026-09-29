@@ -1,6 +1,6 @@
 # Broader Services and Guided Intake Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Make State of Ashes clearly offer ongoing IT care, problem solving, and forward-looking architecture, with a guided enquiry path that uses the existing intake delivery.
 
@@ -26,6 +26,8 @@
 - `app/components/intake-brief.ts`: pure serializer and validation constants shared with the guided UI.
 - `app/components/intake-form.tsx`: align general form language with wider offer.
 - `app/page.tsx`: narrative order, engagement and operator notes, guided bubble mount.
+- `app/layout.tsx`: broaden page title, description, and social metadata.
+- `app/api/intake/route.ts`: change internal notification and validation wording to "enquiry" without altering delivery behavior or the Resend-managed auto-reply.
 - `app/globals.css`: responsive styles for new sections and sheet, focus and reduced-motion states.
 - `scripts/test-intake-brief.mjs`: meaningful tests for the serialized request, limits, and optional values.
 
@@ -37,11 +39,11 @@
 
 **Interfaces:** `WaysIn` takes no props and renders links to `#intake` carrying a context through `useExperience().setFocus`. Existing `ActionLink` remains the hero CTA.
 
-- [ ] **Step 1: Replace the hero descriptor and CTA.** Keep `STATE OF ASHES` and all video elements. Render the exact approved promise and supporting line: `Technology that works for your business.` and `We look after the systems you rely on, solve the problems slowing you down, and design what comes next.` Link text: `Tell us what you need`.
-- [ ] **Step 2: Add the three-way entry component.** Use a data array with `{title, example, focus}` for `Manage today`, `Solve now`, `Build next`; map each to an accessible `<a href="#intake" onClick={() => setFocus(focus)}>`. Keep all three equally prominent.
-- [ ] **Step 3: Wire page sections and general enquiry language.** Render `<WaysIn/>` after the hero, keep doctrine and blueprints, add Western Cape / South Africa reach and project-or-ongoing copy. Change intake heading to `Tell us what you need.`; change form labels to `Enquiry`, `What do you need help with?`, and `Send enquiry` without changing field names.
-- [ ] **Step 4: Check responsive layout and compile.** Run `npm run typecheck` and `npm run build`; expected exit code 0. Manually check the first viewport at 390px and 1440px.
-- [ ] **Step 5: Commit.** `git add app/components/hero-experience.tsx app/components/experience.tsx app/components/intake-form.tsx app/components/ways-in.tsx app/page.tsx app/globals.css` then `git commit -m "Broaden landing page positioning"`.
+- [x] **Step 1: Replace the hero descriptor and CTA.** Keep `STATE OF ASHES` and all video elements. Render the exact approved promise and supporting line: `Technology that works for your business.` and `We look after the systems you rely on, solve the problems slowing you down, and design what comes next.` Link text: `Tell us what you need`.
+- [x] **Step 2: Add the three-way entry component.** Use a data array with `{title, example, focus}` for `Manage today`, `Solve now`, `Build next`; map each to an accessible `<a href="#intake" onClick={() => setFocus(focus)}>`. Keep all three equally prominent.
+- [x] **Step 3: Wire page sections and general enquiry language.** Render `<WaysIn/>` after the hero, keep doctrine and blueprints, add Western Cape / South Africa reach and project-or-ongoing copy. Change intake heading to `Tell us what you need.`; change form labels to `Enquiry`, `What do you need help with?`, and `Send enquiry` without changing field names.
+- [x] **Step 4: Check responsive layout and compile.** Run `npm run typecheck` and `npm run build`; expected exit code 0. Manually check the first viewport at 390px and 1440px.
+- [x] **Step 5: Commit.** `git add app/components/hero-experience.tsx app/components/experience.tsx app/components/intake-form.tsx app/components/ways-in.tsx app/page.tsx app/globals.css` then `git commit -m "Broaden landing page positioning"`.
 
 ### Task 2: Capability breadth and honest proof
 
@@ -49,11 +51,11 @@
 
 **Interfaces:** Each capability exposes `{title, summary, detail, examples, focus}`. The existing expand/collapse state and `ActionLink` continue to lead to `#intake` with a focus value.
 
-- [ ] **Step 1: Replace the three-card data with six families.** Use the approved labels: Workplace and tenant operations; Domains, networks, and infrastructure; Security foundations; Websites and custom software; Automation and AI architecture; Technology direction. Include exactly the grounded service examples in the spec.
-- [ ] **Step 2: Adjust the responsive grid and detail panel.** Show three columns on wide desktop, two on tablet, one on mobile. Keep keyboard-operable expand buttons, amber circuit hover accent, and the selected-card detail region. Give each button a unique `aria-controls` target and keep the expanded content associated with the chosen card.
-- [ ] **Step 3: Clarify method and proof.** Add a fit-for-purpose recommendation line to doctrine. Keep `CONCEPT BLUEPRINT` and make the blueprint note explicit that these are illustrative, not delivered cases. Add one short operator note in the page about MSP experience across SA and US environments; identify the mail setup only as the owner's internal example if shown.
-- [ ] **Step 4: Verify.** Run `npm run typecheck` and `npm run build`; inspect cards at mobile and desktop widths, including keyboard toggling.
-- [ ] **Step 5: Commit.** `git add app/components/architecture.tsx app/components/blueprints.tsx app/components/doctrine-lab.tsx app/page.tsx app/globals.css` then `git commit -m "Expand and clarify service capabilities"`.
+- [x] **Step 1: Replace the three-card data with six families.** Use the approved labels: Workplace and tenant operations; Domains, networks, and infrastructure; Security foundations; Websites and custom software; Automation and AI architecture; Technology direction. Include exactly the grounded service examples in the spec.
+- [x] **Step 2: Adjust the responsive grid and detail panel.** Show three columns on wide desktop, two on tablet, one on mobile. Keep keyboard-operable expand buttons, amber circuit hover accent, and the selected-card detail region. Give each button a unique `aria-controls` target and keep the expanded content associated with the chosen card.
+- [x] **Step 3: Clarify method and proof.** Add a fit-for-purpose recommendation line to doctrine. Keep `CONCEPT BLUEPRINT` and make the blueprint note explicit that these are illustrative, not delivered cases. Add one short operator note in the page about MSP experience across SA and US environments; identify the mail setup only as the owner's internal example if shown.
+- [x] **Step 4: Verify.** Run `npm run typecheck` and `npm run build`; inspect cards at mobile and desktop widths, including keyboard toggling.
+- [x] **Step 5: Commit.** `git add app/components/architecture.tsx app/components/blueprints.tsx app/components/doctrine-lab.tsx app/page.tsx app/globals.css` then `git commit -m "Expand and clarify service capabilities"`.
 
 ### Task 3: Guided request serialization
 
@@ -61,20 +63,21 @@
 
 **Interfaces:** Export `type GuidedBrief`, `formatGuidedBrief(value: GuidedBrief): string`, `GUIDED_DESCRIPTION_MAX`, and `GUIDED_FIELD_MAX`. A brief contains `topic`, `urgency`, `company`, `location`, `systems`, and `description`; optional strings become `Not provided`.
 
-- [ ] **Step 1: Write a failing Node test.** `scripts/test-intake-brief.mjs` imports `../app/components/intake-brief.ts` and asserts that an example with topic `Security concern`, urgency `Something is down`, blank company, location `Worcester`, systems `Microsoft 365`, and a 20+ character description yields labelled lines including `Company: Not provided` and stays <=5,000 characters. Assert values containing newlines are normalized to spaces so they cannot spoof labels.
-- [ ] **Step 2: Run `node --experimental-strip-types scripts/test-intake-brief.mjs`.** Expected failure: module not found.
-- [ ] **Step 3: Implement the pure formatter.** Normalize user-supplied single-line fields with `replace(/\s+/g, ' ').trim()`, trim the description, and return `Topic: ...\nUrgency: ...\nCompany: ...\nLocation: ...\nCurrent systems: ...\n\nDescription:\n...`. Keep UI field maximums below the route's 5,000-character limit. Throw when any required value is absent or serialized output exceeds 5,000.
-- [ ] **Step 4: Rerun the test and `npm run typecheck`.** Both should pass.
-- [ ] **Step 5: Commit.** `git add app/components/intake-brief.ts scripts/test-intake-brief.mjs` then `git commit -m "Format guided enquiries for existing intake"`.
+- [x] **Step 1: Write a failing Node test.** `scripts/test-intake-brief.mjs` imports `../app/components/intake-brief.ts` and asserts that an example with topic `Security concern`, urgency `Something is down`, blank company, location `Worcester`, systems `Microsoft 365`, and a 20+ character description yields labelled lines including `Company: Not provided` and stays <=5,000 characters. Assert values containing newlines are normalized to spaces so they cannot spoof labels.
+- [x] **Step 2: Run `node --experimental-strip-types scripts/test-intake-brief.mjs`.** Expected failure: module not found.
+- [x] **Step 3: Implement the pure formatter.** Normalize user-supplied single-line fields with `replace(/\s+/g, ' ').trim()`, trim the description, and return `Topic: ...\nUrgency: ...\nCompany: ...\nLocation: ...\nCurrent systems: ...\n\nDescription:\n...`. Keep UI field maximums below the route's 5,000-character limit. Throw when any required value is absent or serialized output exceeds 5,000.
+- [x] **Step 4: Rerun the test and `npm run typecheck`.** Both should pass.
+- [x] **Step 5: Commit.** `git add app/components/intake-brief.ts scripts/test-intake-brief.mjs` then `git commit -m "Format guided enquiries for existing intake"`.
 
 ### Task 4: Guided bubble and final verification
 
-**Files:** Create `app/components/guided-intake.tsx`; modify `app/page.tsx`, `app/globals.css`.
+**Files:** Create `app/components/guided-intake.tsx`; modify `app/page.tsx`, `app/globals.css`, `app/layout.tsx`, `app/components/intake-form.tsx`, `app/api/intake/route.ts`.
 
 **Interfaces:** `GuidedIntake` takes no props, uses `formatGuidedBrief`, posts `{name,email,website:'',bottleneck}` to `/api/intake`, and is mounted once inside `ExperienceProvider`. No route or database change.
 
-- [ ] **Step 1: Build the staged UI.** Use `topic -> guidance -> details -> review -> success` as explicit states. Required: name >=2, valid email, urgency, description >=20. Optional company, location, systems can be blank. Provide native labels, max lengths, and visible field counts where appropriate. Let Back preserve answers and Review allow edits.
-- [ ] **Step 2: Add interaction safety.** Use a launcher button with `aria-expanded` and `aria-controls`, a labelled dialog/bottom sheet, Escape and Close behavior, initial focus inside and return focus to launcher, focus containment, background scroll lock, and no submission on close. Respect `useExperience().enabled` for reduced transitions.
-- [ ] **Step 3: Connect delivery and recovery.** On review, serialize once and post. Disable repeat sends while pending. Treat HTTP success as `Request received`; retain the draft on failure and offer retry plus copy brief. Never promise that storage and email both succeeded. Do not solve the visitor's issue in the scripted guidance.
-- [ ] **Step 4: Style and verify.** Add fixed desktop panel and mobile bottom sheet using existing slate/amber tokens; avoid covering video controls and main CTA. Run serializer test, existing `scripts/test-intake.mjs`, `npm run typecheck`, and `npm run build`. Inspect mobile/desktop, keyboard, Escape/focus, reduced motion, and both intake paths. A live delivery test requires the existing user authorization and must be clearly labelled.
-- [ ] **Step 5: Commit.** `git add app/components/guided-intake.tsx app/page.tsx app/globals.css` then `git commit -m "Add guided enquiry experience"`.
+- [x] **Step 1: Build the staged UI.** Use `topic -> guidance -> details -> review -> success` as explicit states. Required: name >=2, valid email, urgency, description >=20. Optional company, location, systems can be blank. Provide native labels, max lengths, and visible field counts where appropriate. Let Back preserve answers and Review allow edits.
+- [x] **Step 2: Add interaction safety.** Use a launcher button with `aria-expanded` and `aria-controls`, a labelled dialog/bottom sheet, Escape and Close behavior, initial focus inside and return focus to launcher, focus containment, background scroll lock, and no submission on close. Respect `useExperience().enabled` for reduced transitions.
+- [x] **Step 3: Connect delivery and recovery.** On review, serialize once and post. Disable repeat sends while pending. Treat HTTP success as `Request received`; retain the draft on failure and offer retry plus copy brief. Never promise that storage and email both succeeded. Do not solve the visitor's issue in the scripted guidance.
+- [x] **Step 3a: Align existing language.** Use “enquiry” in the general form, page metadata, internal notification subject/body, and route validation error. Keep the database `bottleneck` field and published Resend auto-reply template unchanged.
+- [x] **Step 4: Style and verify.** Add fixed desktop panel and mobile bottom sheet using existing slate/amber tokens; avoid covering video controls and main CTA. Run serializer test, existing `scripts/test-intake.mjs`, `npm run typecheck`, and `npm run build`. Inspect mobile/desktop, keyboard, Escape/focus, reduced motion, and both intake paths. A live delivery test requires the existing user authorization and must be clearly labelled.
+- [x] **Step 5: Commit.** `git add app/components/guided-intake.tsx app/components/intake-form.tsx app/page.tsx app/globals.css app/layout.tsx app/api/intake/route.ts docs/superpowers/plans/2026-09-29-broader-services-guided-intake.md` then `git commit -m "Add guided enquiry experience"`.
