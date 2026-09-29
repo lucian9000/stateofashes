@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { ArrowDown, Pause, Play } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { useExperience, ActionLink } from "./experience";
 import { observeVideoPlayback } from "./video-playback";
 
@@ -13,23 +13,20 @@ export function HeroExperience() {
   const { enabled } = useExperience();
   const root = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
-  const userPaused = useRef(false);
   const inView = useRef(true);
-  const [playing, setPlaying] = useState(false);
   const [hasFrame, setHasFrame] = useState(false);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     const player = video.current;
     if (!player) return;
     const presentation = observeVideoPlayback(player, state => {
-      setPlaying(state.playing);
       setHasFrame(state.hasFrame);
       setFailed(state.failed);
     });
     player.muted = true;
     player.defaultMuted = true;
     const sync = () => {
-      if (enabled && inView.current && !userPaused.current && !document.hidden) player.play().then(presentation.refresh, presentation.refresh);
+      if (enabled && inView.current && !document.hidden) player.play().then(presentation.refresh, presentation.refresh);
       else player.pause();
       presentation.refresh();
     };
@@ -58,6 +55,6 @@ export function HeroExperience() {
       <div className="hero-side hero-side-left mono"><span>INDEPENDENT THINKING.</span><span>EXACTING EXECUTION.</span><i/></div><div className="hero-side hero-side-right mono"><span>NOTHING EXTRA.</span><span>NOTHING ACCIDENTAL.</span><i/></div>
     </div>
     <div className="hero-content shell"><div className="hero-kicker mono"><span className="status-dot"/>[ SYS_STATUS: OPERATIONAL // ARCH_V1 ]</div><h1 id="hero-title"><span className="word-mask"><span className="hero-title-word">STATE OF</span></span> <span className="word-mask"><span className="hero-title-word title-ember">ASHES</span></span></h1><p className="hero-description">Technology that works for your business.</p><p className="hero-support">We look after the systems you rely on, solve the problems slowing you down, and design what comes next.</p><div className="hero-actions"><ActionLink>Tell us what you need</ActionLink></div><p className="hero-location mono">BASED IN THE WESTERN CAPE / WORKING ACROSS SOUTH AFRICA</p></div>
-    <div className="hero-bottom shell mono"><a href="#doctrine"><span className="scroll-line"/>SCROLL TO RECONSTRUCT<ArrowDown size={13}/></a><span>FROM COMPLEXITY. INTO CLARITY.</span><button className="video-control" disabled={failed || !enabled} onClick={() => { const player = video.current; if (!player) return; if (player.paused) { userPaused.current = false; player.play().catch(() => setPlaying(false)); } else { userPaused.current = true; player.pause(); } }} aria-label={playing ? "Pause background video" : "Play background video"}>{playing ? <Pause size={12}/> : <Play size={12}/>}<span>{failed ? "STILL FRAME" : !enabled ? "MOTION PAUSED" : playing ? "LIVE VISUAL FEED" : "PLAY VISUAL FEED"}</span></button></div>
+    <div className="hero-bottom shell mono"><a href="#doctrine"><span className="scroll-line"/>SCROLL TO RECONSTRUCT<ArrowDown size={13}/></a><span>FROM COMPLEXITY. INTO CLARITY.</span></div>
   </section>;
 }
