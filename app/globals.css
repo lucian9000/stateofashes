@@ -32,3 +32,30 @@
 
 .video-poster.poster-hidden{opacity:0}
 @media(max-width:767px){.hero-bottom{margin-top:auto;padding-top:28px}}
+
+/* Broader service story */
+.hero-support{max-width:590px;margin:10px auto 0;color:#c6beb1;font-size:13px;line-height:1.8;text-align:center}
+.hero-location{margin:22px 0 0;color:#b99a6a;font-size:8px;letter-spacing:1.1px;text-align:center}
+.ways-section{padding-top:118px}
+.ways-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.way-card{position:relative;min-height:310px;display:flex;flex-direction:column;padding:29px;border:1px solid #f59e0b29;background:linear-gradient(155deg,#1c171163,#0b0b0e 68%);overflow:hidden;transition:border-color .35s,transform .35s,box-shadow .35s}
+.way-card::before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,#e8a849,transparent);transform:translateX(-110%);transition:transform .65s}
+.way-card:hover,.way-card:focus-visible{border-color:#d99b4370;transform:translateY(-4px);box-shadow:0 18px 42px -28px #dc891b50}
+.way-card:hover::before,.way-card:focus-visible::before{transform:translateX(110%)}
+.way-top{display:flex;align-items:start;justify-content:space-between;color:#c7a573;font-size:8px;letter-spacing:.9px}
+.way-top svg{color:#e2af68}
+.way-title{display:block;margin-top:55px;font-family:'Barlow Condensed',sans-serif;font-size:clamp(35px,3.6vw,52px);font-weight:600;letter-spacing:.2px;line-height:1;color:#f0e9df;text-transform:uppercase}
+.way-example{display:block;max-width:300px;margin-top:19px;color:#b6aa9b;font-size:12px;line-height:1.8}
+.way-action{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:28px;color:#e4b674;font-size:8px;letter-spacing:1px}
+.way-action svg{transition:transform .3s}
+.way-card:hover .way-action svg{transform:translate(3px,-3px)}
+.engagement-section{border-top:1px solid #f59e0b22;background:radial-gradient(ellipse at 15% 70%,#6f421426,transparent 58%),#0b0b0e}
+.engagement-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.engagement-heading{font-size:clamp(40px,4.7vw,65px);line-height:1.08}
+.engagement-content>p:first-child{margin:4px 0 30px;color:#ded3c5;font-size:17px;line-height:1.8;max-width:560px}
+.engagement-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.engagement-facts span{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #dca15842;padding:17px;color:#e6be85;font:8px 'IBM Plex Mono',monospace;letter-spacing:.7px}
+.operator-note{border-top:1px solid #dca1582e;padding-top:25px;margin:29px 0 0;color:#a99d8c;font-size:12px;line-height:1.85}
+@media(max-width:900px){.ways-grid{grid-template-columns:1fr 1fr}.way-card:last-child{grid-column:1/-1}.engagement-layout{gap:45px}}
+@media(max-width:767px){.hero-support{max-width:330px;font-size:11px;line-height:1.65}.hero-location{font-size:6px;line-height:1.6;max-width:300px;margin:18px auto 0}.ways-section{padding-top:79px}.ways-grid{grid-template-columns:1fr}.way-card,.way-card:last-child{grid-column:auto;min-height:240px;padding:25px}.way-title{margin-top:30px;font-size:43px}.way-example{margin-top:13px}.way-action{padding-top:18px}.engagement-layout{grid-template-columns:1fr;gap:28px}.engagement-content>p:first-child{font-size:15px}.engagement-facts{grid-template-columns:1fr 1fr}}
+@media(max-width:380px){.hero-location{max-width:255px}.engagement-facts{grid-template-columns:1fr}}
