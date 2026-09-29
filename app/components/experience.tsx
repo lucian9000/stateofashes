@@ -2,28 +2,27 @@
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode, type MouseEvent } from "react";
 import { AnimatePresence, motion, MotionConfig, useMotionValue, useReducedMotion, useScroll, useSpring } from "framer-motion";
-import { ArrowUpRight, Menu, Sparkles, X } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 
-const ExperienceContext = createContext({ enabled: true, toggle: () => {}, focus: "", setFocus: (_value: string) => {} });
+const ExperienceContext = createContext({ enabled: true, focus: "", setFocus: (_value: string) => {} });
 export const useExperience = () => useContext(ExperienceContext);
 export function ExperienceProvider({ children }: { children: ReactNode }) {
   const reduced = useReducedMotion();
-  const [motionOn, setMotionOn] = useState(true);
   const [focus, setFocus] = useState("");
-  const enabled = motionOn && !reduced;
-  return <ExperienceContext.Provider value={{ enabled, toggle: () => setMotionOn(v => !v), focus, setFocus }}><MotionConfig reducedMotion={enabled ? "user" : "always"}><div className={enabled ? "experience" : "experience motion-paused"}>{children}</div></MotionConfig></ExperienceContext.Provider>;
+  const enabled = !reduced;
+  return <ExperienceContext.Provider value={{ enabled, focus, setFocus }}><MotionConfig reducedMotion={enabled ? "user" : "always"}><div className={enabled ? "experience" : "experience motion-paused"}>{children}</div></MotionConfig></ExperienceContext.Provider>;
 }
 export function Brand() {
-  return <a href="#top" className="brand" aria-label="State of Ashes home"><img src="/logo.png" width="56" height="56" alt="State of Ashes circuit phoenix"/><span>STATE OF ASHES<small>INDEPENDENT SYSTEMS ARCHITECTURE</small></span></a>;
+  return <a href="#top" className="brand" aria-label="State of Ashes home"><img src="/logo.png" width="56" height="56" alt="State of Ashes circuit phoenix"/><span>STATE OF ASHES<small>TECHNOLOGY / ON YOUR TERMS</small></span></a>;
 }
 export function SiteHeader() {
-  const { enabled, toggle } = useExperience();
+  const { enabled } = useExperience();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
   const menuButton = useRef<HTMLButtonElement>(null);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 180, damping: 35 });
-  const links = [["Doctrine", "doctrine"], ["Architecture", "architecture"], ["Blueprints", "blueprints"]];
+  const links = [["How we help", "ways-in"], ["Services", "architecture"], ["Approach", "doctrine"]];
   useEffect(() => {
     const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); }), { rootMargin: "-15% 0px -65% 0px" });
     document.querySelectorAll("main > section[id]").forEach(section => observer.observe(section));
@@ -31,7 +30,7 @@ export function SiteHeader() {
     window.addEventListener("keydown", escape);
     return () => { observer.disconnect(); window.removeEventListener("keydown", escape); };
   }, []);
-  return <header className="site-header"><motion.div className="reading-progress" style={{ scaleX: enabled ? progress : scrollYProgress }}/><div className="shell header-inner"><Brand/><nav className="desktop-nav" aria-label="Main navigation">{links.map(([label, id]) => <a key={id} href={`#${id}`} aria-current={active === id ? "location" : undefined}>{label}{active === id && <motion.span layoutId="nav-indicator" className="nav-indicator"/>}</a>)}</nav><div className="header-actions"><button className="motion-toggle mono" onClick={toggle} aria-pressed={enabled} aria-label={enabled ? "Turn motion off" : "Turn motion on"}><Sparkles size={13}/><span>MOTION {enabled ? "ON" : "OFF"}</span></button><a className="header-contact" href="#intake">Let's talk<ArrowUpRight size={16}/></a><button ref={menuButton} className="mobile-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(v => !v)}>{open ? <X size={20}/> : <Menu size={20}/>}</button></div></div><AnimatePresence>{open && <motion.nav id="mobile-navigation" aria-label="Mobile navigation" className="mobile-nav" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .22 }}>{[...links,["Start a diagnostic","intake"]].map(([label,id]) => <a key={id} href={`#${id}`} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</motion.nav>}</AnimatePresence></header>;
+  return <header className="site-header"><motion.div className="reading-progress" style={{ scaleX: enabled ? progress : scrollYProgress }}/><div className="shell header-inner"><Brand/><nav className="desktop-nav" aria-label="Main navigation">{links.map(([label, id]) => <a key={id} href={`#${id}`} aria-current={active === id ? "location" : undefined}>{label}{active === id && <motion.span layoutId="nav-indicator" className="nav-indicator"/>}</a>)}</nav><div className="header-actions"><a className="header-contact" href="#intake">Let's talk<ArrowUpRight size={16}/></a><button ref={menuButton} className="mobile-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(v => !v)}>{open ? <X size={20}/> : <Menu size={20}/>}</button></div></div><AnimatePresence>{open && <motion.nav id="mobile-navigation" aria-label="Mobile navigation" className="mobile-nav" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .22 }}>{[...links,["Start an enquiry","intake"]].map(([label,id]) => <a key={id} href={`#${id}`} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</motion.nav>}</AnimatePresence></header>;
 }
 export function ActionLink({ children, href = "#intake", secondary = false, onClick }: { children: ReactNode; href?: string; secondary?: boolean; onClick?: () => void }) {
   const { enabled } = useExperience();
