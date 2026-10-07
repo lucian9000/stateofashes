@@ -1,5 +1,5 @@
 export const GUIDED_TOPICS = ["Something is down", "Security concern", "Project enquiry", "Planning ahead", "Something else"] as const;
-export const GUIDED_URGENCIES = ["Something is down", "Security concern", "Project enquiry", "Planning ahead", "Other / unsure"] as const;
+export const GUIDED_URGENCIES = ["Business currently affected", "Within a few days", "Planned project", "Other / unsure"] as const;
 export const GUIDED_DESCRIPTION_MAX = 4000;
 export const GUIDED_FIELD_MAX = { company: 100, location: 120, systems: 250 } as const;
 

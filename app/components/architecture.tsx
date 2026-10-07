@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,17 +9,13 @@ import { ArrowDown, Check, ChevronDown, Code2, Compass, Globe2, Network, ShieldC
 import { ActionLink, useExperience } from "./experience";
 import { CapabilityVisual, visualNames } from "./capability-visuals";
 import "./capability-visuals.css";
+import Link from "next/link";
+import { services } from "../content/services";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const capabilities = [
-  { icon: Globe2, title: "Workplace & tenants", subtitle: "Keep the essentials dependable.", text: "Microsoft 365 and Google Workspace setup, administration, and ongoing management.", tags: ["MICROSOFT 365", "GOOGLE WORKSPACE"], detail: "From a clean tenant setup to the day-to-day administration that keeps people productive, we work around your team's actual ways of working.", examples: ["Tenant setup and configuration", "Ongoing administration", "Workplace improvements"], focus: "Workplace and tenant operations" },
-  { icon: Network, title: "Domains & networks", subtitle: "The systems beneath the work.", text: "Domain management, network management, and practical infrastructure improvements.", tags: ["DOMAINS", "NETWORKS"], detail: "Understand what is connected, where it is fragile, and what needs attention first. The right answer may be a small fix or a staged change.", examples: ["Domain management", "Network assessment and management", "Infrastructure improvements"], focus: "Domains, networks, and infrastructure" },
-  { icon: ShieldCheck, title: "Security foundations", subtitle: "Protect what the business relies on.", text: "Workspace hardening, identity and access, backups, and endpoint protection.", tags: ["IDENTITY", "BACKUPS"], detail: "Start with the controls that matter to your environment. Additional security needs are discussed and scoped against the tools and support they require.", examples: ["Microsoft 365 and Google Workspace hardening", "Identity and access", "Backup and endpoint protection"], focus: "Security foundations" },
-  { icon: Code2, title: "Web & software", subtitle: "Built for the way you operate.", text: "Websites, bespoke software, internal tools, and the connections between them.", tags: ["WEBSITES", "CUSTOM TOOLS"], detail: "Where existing products fit, use them. Where they do not, design and build something that supports the workflow instead of fighting it.", examples: ["Website development", "Custom applications and internal tools", "Software integrations"], focus: "Websites and custom software" },
-  { icon: Workflow, title: "Automation & AI", subtitle: "Useful intelligence, carefully applied.", text: "Automation and AI architecture grounded in a real operational need.", tags: ["WORKFLOWS", "AI ARCHITECTURE"], detail: "Find repetitive friction, connect the right systems, and keep people in control of decisions that need judgment.", examples: ["Workflow mapping", "Practical automation", "AI integration with human oversight"], focus: "Automation and AI architecture" },
-  { icon: Compass, title: "Technology direction", subtitle: "Make the next move deliberate.", text: "vCIO guidance, technology roadmaps, and solutions architecture.", tags: ["VCIO", "ROADMAPS"], detail: "Turn scattered technology decisions into a clear direction that fits the business, its resources, and its priorities.", examples: ["Technology roadmaps", "Solutions architecture", "vCIO guidance"], focus: "Technology direction" },
-];
+const icons = [Globe2, Network, ShieldCheck, Code2, Workflow, Compass];
+const capabilities = services;
 
 export function Architecture() {
   const { enabled, setFocus } = useExperience();
@@ -49,9 +45,22 @@ export function Architecture() {
 
   return <section id="architecture" className="architecture-section" ref={root} aria-labelledby="architecture-title"><div className="shell section">
     <div className="section-eyebrow mono"><span className="tiny-cross">+</span> WHERE WE CAN HELP<span className="eyebrow-line"/><span className="section-index">02 / CAPABILITIES</span></div>
-    <div className="section-heading"><h2 id="architecture-title">Built around the problem.<br/><span className="muted-heading">Never the category.</span></h2><p className="body-copy">One business can need reliable email today, a safer network tomorrow, and a custom workflow next quarter. We work from the problem outward.</p></div>
-    <div className="capabilities grid md:grid-cols-2 xl:grid-cols-3 gap-4">{capabilities.map(({ icon: Icon, title, subtitle, text, tags }, i) => <article key={title} data-art={visualNames[i]} className={`architecture-card ${selected === i ? "selected" : ""}`}><div className="card-icon"><Icon size={24} strokeWidth={1.3}/><span className="mono">CAPABILITY / 0{i + 1}</span></div><CapabilityVisual index={i}/><h3>{title}<br/><span>{subtitle}</span></h3><p>{text}</p><div className="tags mono">{tags.map(tag => <span key={tag}>{tag}</span>)}</div><button className="capability-toggle" aria-expanded={selected === i} aria-controls={selected === i ? "capability-detail" : undefined} onClick={() => setSelected(selected === i ? null : i)}>{selected === i ? "Close capability" : "Explore capability"}<ChevronDown size={17}/></button></article>)}</div>
-    <AnimatePresence initial={false}>{selected !== null && <motion.div id="capability-detail" className="capability-detail" onAnimationComplete={() => { if (selected !== null && window.matchMedia("(max-width: 767px)").matches) document.getElementById("capability-detail")?.scrollIntoView({ behavior: enabled ? "smooth" : "instant", block: "center" }); }} initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: enabled ? .3 : 0 }}><div className="capability-detail-inner"><div><span className="mono">WHERE WE CAN START</span><h3>{capabilities[selected].title}</h3><p>{capabilities[selected].detail}</p></div><ul>{capabilities[selected].examples.map(item => <li key={item}><Check size={14}/>{item}</li>)}</ul><ActionLink onClick={() => setFocus(capabilities[selected].focus)}>Discuss this capability</ActionLink></div></motion.div>}</AnimatePresence>
+    <div className="section-heading"><h2 id="architecture-title">Technology shaped around<br/><span className="muted-heading">your business.</span></h2><p className="body-copy">From Microsoft 365 administration to custom software, we recommend an approach that fits your systems and resources.</p></div>
+    <div className="capabilities grid md:grid-cols-2 xl:grid-cols-3 gap-4">{capabilities.map((service, i) => {
+      const Icon = icons[i];
+      const expanded = selected === i;
+      const panelId = `capability-detail-${service.slug}`;
+      return <article key={service.slug} data-art={visualNames[i]} className={`architecture-card ${expanded ? "selected" : ""}`}>
+        <div className="card-icon"><Icon size={24} strokeWidth={1.3}/><span className="mono">CAPABILITY / 0{i + 1}</span></div>
+        <CapabilityVisual index={i}/><h3>{service.title}<br/><span>{service.subtitle}</span></h3><p>{service.text}</p>
+        <div className="tags mono">{service.tags.map(tag => <span key={tag}>{tag}</span>)}</div>
+        <button type="button" className="capability-toggle" aria-label={`${expanded ? "Close" : "Explore"} ${service.title}`} aria-expanded={expanded} aria-controls={panelId} onClick={() => setSelected(expanded ? null : i)}>{expanded ? "Close capability" : "Explore capability"}<ChevronDown size={17}/></button>
+        <motion.div id={panelId} className="capability-inline-detail" aria-hidden={!expanded} inert={!expanded} initial={false} animate={{ height: expanded ? "auto" : 0, opacity: expanded ? 1 : 0 }} transition={{ duration: enabled ? .28 : 0 }}>
+          <div className="capability-inline-inner"><p>{service.detail}</p><ul>{service.examples.map(item => <li key={item}><Check size={14}/>{item}</li>)}</ul><Link className="text-link" href={`/services/${service.slug}`}>Read about this service <ArrowDown size={14}/></Link><ActionLink onClick={() => setFocus(service.focus)}>Discuss this service</ActionLink></div>
+        </motion.div>
+      </article>;
+    })}</div>
+    <div className="service-index-link"><Link href="/services" className="text-link">Explore all services <ArrowDown size={14}/></Link></div>
     <div className="architecture-footnote mono"><span>ONE PRACTICE. MULTIPLE WAYS FORWARD.</span><span>DOESN&apos;T FIT A LABEL? TELL US ABOUT IT <ArrowDown size={12}/></span></div>
   </div></section>;
 }

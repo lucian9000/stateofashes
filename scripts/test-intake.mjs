@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
 
-const base = 'http://127.0.0.1:3001';
+const base = process.env.INTAKE_TEST_BASE_URL || 'http://127.0.0.1:3001';
+const mockPort = process.env.INTAKE_TEST_MOCK_PORT || '3002';
+const mockBase = `http://127.0.0.1:${mockPort}`;
 const valid = { name: ' Test Studio ', email: 'test@example.com', bottleneck: ' Testing a disconnected operational workflow. ' };
 const post = (origin, data, headers = {}) => fetch(`${origin}/api/intake`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin, ...headers }, body: typeof data === 'string' ? data : JSON.stringify(data) });
 for (const [label, data, headers, expected] of [
@@ -41,16 +43,16 @@ const mock = createServer(async (req, res) => {
 });
 await new Promise(resolve => mock.listen(0, '127.0.0.1', resolve));
 const mockUrl = `http://127.0.0.1:${mock.address().port}`;
-const child = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1', '--port', '3002'], { env: { ...process.env, SUPABASE_URL: mockUrl, SUPABASE_SERVICE_ROLE_KEY: 'test-service-key', RESEND_API_URL: mockUrl, RESEND_API_KEY: 'test-resend-key', INTAKE_NOTIFY_EMAIL: 'owner@example.com' }, stdio: 'ignore', windowsHide: true });
+const child = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1', '--port', mockPort], { env: { ...process.env, SUPABASE_URL: mockUrl, SUPABASE_SERVICE_ROLE_KEY: 'test-service-key', RESEND_API_URL: mockUrl, RESEND_API_KEY: 'test-resend-key', INTAKE_NOTIFY_EMAIL: 'owner@example.com' }, stdio: 'ignore', windowsHide: true });
 try {
   let ready = false;
   for (let i = 0; i < 40; i++) {
-    try { if ((await fetch('http://127.0.0.1:3002')).ok) { ready = true; break; } } catch {}
+    try { if ((await fetch(mockBase)).ok) { ready = true; break; } } catch {}
     await new Promise(resolve => setTimeout(resolve, 250));
   }
   assert.ok(ready, 'test server starts');
 
-  const accepted = await post('http://127.0.0.1:3002', valid);
+  const accepted = await post(mockBase, valid);
   assert.equal(accepted.status, 200); assert.equal((await accepted.json()).ok, true);
   assert.equal(inserted.name, 'Test Studio'); assert.equal(inserted.bottleneck, valid.bottleneck.trim());
   assert.equal(inserted.source, 'state-of-ashes'); assert.ok(inserted.submitted_at);
@@ -59,14 +61,14 @@ try {
   console.log('PASS: stores the normalized request and emails a notification');
 
   state.resend = 500;
-  assert.equal((await post('http://127.0.0.1:3002', valid)).status, 200);
+  assert.equal((await post(mockBase, valid)).status, 200);
   console.log('PASS: a stored request still succeeds when email delivery fails');
 
   state.supabase = 500;
-  assert.equal((await post('http://127.0.0.1:3002', valid)).status, 502);
+  assert.equal((await post(mockBase, valid)).status, 502);
   console.log('PASS: losing both store and email does not report success');
 
   state.resend = 200;
-  assert.equal((await post('http://127.0.0.1:3002', valid)).status, 200);
+  assert.equal((await post(mockBase, valid)).status, 200);
   console.log('PASS: an emailed request still succeeds when storage fails');
 } finally { child.kill(); await new Promise(resolve => mock.close(resolve)); }
